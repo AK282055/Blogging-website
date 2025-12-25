@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup – Blogging Vlog</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.min.css" />
+  <style>
+    .oauth-divider {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      color: #666;
+    }
+
+    .oauth-divider::before,
+    .oauth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #ddd;
+    }
+
+    .oauth-divider span {
+      margin: 0 10px;
+      font-size: 14px;
+    }
+
+    .google-btn {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #fff;
+      color: #333;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .google-btn:hover {
+      background: #f8f9fa;
+      border-color: #4285f4;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #googleSignupBtn {
+      font-weight: 500;
+    }
+
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="logo">Blogging <span>Vlog</span></div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="profile.html">Profile</a>
+      <a href="upload.html">Upload</a>
+      <a href="login.html">Login</a>
+      <a href="signup.html" class="active">Signup</a>
+      <div id="userOptions">
+        <button onclick="logout()">Logout</button>
+      </div>
+      <button id="mobileMenuToggle" aria-label="Menu" style="margin-left:12px; display:none">☰</button>
+    </nav>
+  </header>
+  <div class="form-container fade-in">
+    <h2>Create Your Account</h2>
+
+    <!-- Google OAuth Button -->
+    <button type="button" id="googleSignupBtn" class="google-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#4285F4"
+          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+        <path fill="#34A853"
+          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+        <path fill="#FBBC05"
+          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+        <path fill="#EA4335"
+          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+      </svg>
+      Sign up with Google
+    </button>
+
+    <div class="oauth-divider">
+      <span>OR</span>
+    </div>
+
+    <!-- Traditional Signup Form -->
+    <form id="signupForm">
+      <input type="text" id="signupUser" placeholder="Username" required>
+      <input type="email" id="signupEmail" placeholder="Email" required>
+      <input type="password" id="signupPass" placeholder="Password" required>
+      <button type="submit">Signup</button>
+      <p>Already have an account? <a href="login.html">Login</a></p>
+    </form>
+  </div>
+
+  <!-- Google Identity Services Library -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="oauth.js"></script>
+  <script src="script.js"></script>
+
+  <script>
+    // Navbar scroll effect and mobile menu
+    (function () {
+      const navbar = document.querySelector('.navbar');
+      const mobileToggle = document.getElementById('mobileMenuToggle');
+      const nav = document.querySelector('.navbar nav');
+
+      function onScroll() {
+        if (window.scrollY > 30) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled');
+      }
+
+      window.addEventListener('scroll', onScroll);
+
+      // Simple mobile toggle
+      function toggleMenu() {
+        const links = nav.querySelectorAll('a');
+        const userOptions = nav.querySelector('#userOptions');
+        const isOpen = nav.getAttribute('data-open') === 'true';
+        if (!isOpen) {
+          links.forEach((a) => { a.style.display = 'block'; });
+          if (userOptions) userOptions.style.display = 'block';
+          nav.setAttribute('data-open', 'true');
+        } else {
+          links.forEach((a) => { a.style.display = 'inline-block'; });
+          if (userOptions) userOptions.style.display = 'none';
+          nav.setAttribute('data-open', 'false');
+        }
+      }
+
+      // Show mobile toggle on small screens
+      function checkResize() {
+        const userOptions = nav.querySelector('#userOptions');
+        if (window.innerWidth < 700) {
+          mobileToggle.style.display = 'inline-block';
+          // hide links and userOptions by default on mobile
+          nav.querySelectorAll('a').forEach(a => a.style.display = 'none');
+          if (userOptions) userOptions.style.display = 'none';
+        } else {
+          mobileToggle.style.display = 'none';
+          nav.querySelectorAll('a').forEach(a => a.style.display = 'inline-block');
+          if (userOptions) userOptions.style.display = 'flex';
+        }
+      }
+
+      window.addEventListener('resize', checkResize);
+      checkResize();
+      mobileToggle.addEventListener('click', toggleMenu);
+    })();
+  </script>
+
+  <footer>
+    <div class="site-footer">
+      <div>
+        <h4>About Blogging Vlog</h4>
+        <p style="color:rgba(255,255,255,0.9); max-width:320px;">A modern place to share your stories, vlogs and ideas.
+          Built with love for creators.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <a href="index.html">Home</a>
+        <a href="profile.html">My Profile</a>
+        <a href="upload.html">Upload</a>
+        <a href="login.html">Login</a>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <a href="#">Help Center</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+      </div>
+      <div>
+        <h4>Follow Us</h4>
+        <div class="social-icons">
+          <a href="#" title="Twitter"><i class="ri-twitter-x-line"></i></a>
+          <a href="#" title="YouTube"><i class="ri-youtube-line"></i></a>
+          <a href="#" title="Instagram"><i class="ri-instagram-line"></i></a>
+        </div>
+        <p style="margin-top:12px;color:rgba(255,255,255,0.9)">© 2025 Blogging Vlog<br>Made by Kanchan Rajput</p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

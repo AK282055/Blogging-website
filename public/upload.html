@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Vlog – Blogging Vlog</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.min.css" />
+  <style>
+    .upload-page-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 6%;
+      min-height: calc(100vh - 200px);
+    }
+
+    .upload-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .upload-header h1 {
+      color: var(--brand-1);
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .upload-header p {
+      color: #666;
+      font-size: 1.1rem;
+    }
+
+    .upload-wrapper {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 2.5rem;
+      align-items: start;
+      max-width: 1400px;
+    }
+
+    .upload-form-section {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(245, 245, 255, 0.98));
+      padding: 3rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(63, 43, 150, 0.12);
+      position: sticky;
+      top: 100px;
+    }
+
+    .upload-form-section h2 {
+      color: var(--brand-1);
+      margin-bottom: 2rem;
+      font-size: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.8rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.8rem;
+      color: var(--brand-1);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .form-group input[type="text"],
+    .form-group textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid rgba(63, 43, 150, 0.2);
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .form-group input[type="text"]:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--brand-1);
+      box-shadow: 0 0 0 3px rgba(63, 43, 150, 0.1);
+      background: #f8f7ff;
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .editor-toolbar {
+      background: linear-gradient(135deg, #f9f9f9, #f5f5f5);
+      padding: 12px;
+      border: 2px solid rgba(63, 43, 150, 0.2);
+      border-radius: 12px 12px 0 0;
+      margin-bottom: 0;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .editor-toolbar button {
+      padding: 10px 14px;
+      background: white !important;
+      color: var(--brand-1) !important;
+      border: 2px solid rgba(63, 43, 150, 0.2) !important;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .editor-toolbar button i {
+      font-size: 1.1rem;
+      display: inline-block;
+    }
+
+    .editor-toolbar button:hover {
+      background: linear-gradient(135deg, var(--brand-1), var(--brand-2)) !important;
+      color: white !important;
+      border-color: var(--brand-1) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(63, 43, 150, 0.2);
+    }
+
+    .editor-toolbar button:active {
+      transform: translateY(0);
+    }
+
+    .vlog-editor {
+      min-height: 180px;
+      border: 2px solid rgba(63, 43, 150, 0.2);
+      border-radius: 0 0 12px 12px;
+      padding: 15px;
+      margin-top: -2px;
+      background: white;
+      overflow-y: auto;
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .vlog-editor:focus {
+      outline: none;
+      border-color: var(--brand-1);
+      box-shadow: 0 0 0 3px rgba(63, 43, 150, 0.1);
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .file-input-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 2rem;
+      border: 2px dashed var(--brand-1);
+      border-radius: 12px;
+      background: rgba(63, 43, 150, 0.05);
+      cursor: pointer;
+      transition: all 0.3s;
+      color: var(--brand-1);
+      font-weight: 600;
+    }
+
+    .file-input-label:hover {
+      background: rgba(63, 43, 150, 0.1);
+      border-color: #a8c0ff;
+    }
+
+    .file-input-label i {
+      font-size: 1.5rem;
+    }
+
+    #imageUpload {
+      display: none;
+    }
+
+    .image-preview {
+      max-width: 100%;
+      max-height: 300px;
+      margin-top: 1rem;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .char-count {
+      font-size: 0.9rem;
+      color: #999;
+      margin-top: 0.5rem;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+      color: white;
+      border: none;
+      padding: 1.2rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(63, 43, 150, 0.2);
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(63, 43, 150, 0.3);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .tips-section {
+      background: linear-gradient(135deg, rgba(168, 192, 255, 0.1), rgba(255, 224, 130, 0.1));
+      padding: 2.5rem;
+      border-radius: 20px;
+      border-left: 5px solid var(--brand-1);
+      position: sticky;
+      top: 100px;
+      max-height: calc(100vh - 150px);
+      overflow-y: auto;
+    }
+
+    .tips-section h2 {
+      color: var(--brand-1);
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tips-list {
+      list-style: none;
+    }
+
+    .tips-list li {
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      background: white;
+      border-radius: 10px;
+      border-left: 4px solid #ffe082;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .tips-list li:hover {
+      box-shadow: 0 4px 16px rgba(63, 43, 150, 0.1);
+      transform: translateX(4px);
+    }
+
+    .tips-list li i {
+      color: #ffe082;
+      font-size: 1.4rem;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .tips-list li strong {
+      color: var(--brand-1);
+      display: block;
+      margin-bottom: 0.3rem;
+      font-size: 1rem;
+    }
+
+    .tips-list li p {
+      color: #666;
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .stats-bar {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-top: 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 1rem;
+      background: linear-gradient(135deg, rgba(63, 43, 150, 0.05), rgba(168, 192, 255, 0.1));
+      border-radius: 10px;
+    }
+
+    .stat-item .stat-label {
+      color: #999;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .stat-item .stat-value {
+      color: var(--brand-1);
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 1000px) {
+      .upload-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .upload-header h1 {
+        font-size: 2rem;
+      }
+
+      .upload-page-container {
+        padding: 1.5rem 4%;
+      }
+    }
+
+    @media (max-width: 600px) {
+
+      .upload-form-section,
+      .tips-section {
+        padding: 1.5rem;
+      }
+
+      .upload-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .editor-toolbar {
+        flex-direction: column;
+      }
+
+      .editor-toolbar button {
+        width: 100%;
+      }
+
+      .stats-bar {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="logo">Blogging <span>Vlog</span></div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="profile.html">Profile</a>
+      <a href="upload.html" class="active">Upload</a>
+      <a href="login.html">Login</a>
+      <a href="signup.html">Signup</a>
+      <div id="userOptions">
+        <button onclick="logout()">Logout</button>
+      </div>
+      <button id="mobileMenuToggle" aria-label="Menu" style="margin-left:12px; display:none">☰</button>
+    </nav>
+  </header>
+
+  <div class="upload-page-container">
+    <div class="upload-header">
+      <h1>✨ Publish Your Story</h1>
+      <p>Share your thoughts, experiences, and ideas with the world</p>
+    </div>
+
+    <div class="upload-wrapper">
+      <!-- Form Section -->
+      <div class="upload-form-section">
+        <h2>📝 Create New Post</h2>
+        <form id="uploadForm" data-inline-handler="true" enctype="multipart/form-data">
+          <!-- Title Input -->
+          <div class="form-group">
+            <label for="title">Post Title</label>
+            <input type="text" id="title" name="title" placeholder="Give your post an engaging title..." required
+              maxlength="100">
+            <div class="char-count"><span id="titleCount">0</span>/100</div>
+          </div>
+
+          <!-- Content Editor -->
+          <div class="form-group">
+            <label for="vlogEditor">Content</label>
+            <div class="editor-toolbar">
+              <button type="button" onclick="formatText('bold')" title="Bold (Ctrl+B)"><i class="ri-bold"></i>
+                Bold</button>
+              <button type="button" onclick="formatText('italic')" title="Italic (Ctrl+I)"><i class="ri-italic"></i>
+                Italic</button>
+              <button type="button" onclick="formatText('underline')" title="Underline (Ctrl+U)"><i
+                  class="ri-underline"></i> Underline</button>
+              <button type="button" onclick="formatText('insertUnorderedList')" title="Bullet List"><i
+                  class="ri-list-unordered"></i> List</button>
+              <button type="button" onclick="formatText('createLink', prompt('Enter URL:'))" title="Add Link"><i
+                  class="ri-links-line"></i> Link</button>
+            </div>
+            <div id="vlogEditor" class="vlog-editor" contenteditable="true"
+              data-placeholder="Start writing your amazing story..."></div>
+          </div>
+
+          <!-- Description Input -->
+          <div class="form-group">
+            <label for="description">Brief Description (for preview)</label>
+            <textarea id="description" name="description" placeholder="A short summary of your post..." required
+              maxlength="200"></textarea>
+            <div class="char-count"><span id="descCount">0</span>/200</div>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="form-group">
+            <label>Featured Image</label>
+            <div class="file-input-wrapper">
+              <label class="file-input-label" for="imageUpload">
+                <i class="ri-image-add-line"></i>
+                <span>Click to upload or drag & drop<br><small style="font-size: 0.9rem;">PNG, JPG up to
+                    5MB</small></span>
+              </label>
+              <input type="file" id="imageUpload" name="image" accept="image/*" required>
+            </div>
+            <img id="imagePreview" class="image-preview" style="display: none;">
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="submit-btn">
+            <i class="ri-upload-cloud-2-line"></i> Publish Post
+          </button>
+        </form>
+      </div>
+
+      <!-- Tips Section -->
+      <div class="tips-section">
+        <h2><i class="ri-lightbulb-flash-line"></i> Writing Tips</h2>
+        <ul class="tips-list">
+          <li>
+            <i class="ri-check-double-line"></i>
+            <div>
+              <strong>Engaging Title</strong>
+              <p>Make it catchy and relevant to attract readers</p>
+            </div>
+          </li>
+          <li>
+            <i class="ri-check-double-line"></i>
+            <div>
+              <strong>Quality Image</strong>
+              <p>Use high-resolution images for better appeal</p>
+            </div>
+          </li>
+          <li>
+            <i class="ri-check-double-line"></i>
+            <div>
+              <strong>Rich Content</strong>
+              <p>Use formatting tools to make content readable</p>
+            </div>
+          </li>
+          <li>
+            <i class="ri-check-double-line"></i>
+            <div>
+              <strong>Clear Description</strong>
+              <p>Write a compelling preview for your post</p>
+            </div>
+          </li>
+          <li>
+            <i class="ri-check-double-line"></i>
+            <div>
+              <strong>Authentic Voice</strong>
+              <p>Write naturally and express your unique perspective</p>
+            </div>
+          </li>
+        </ul>
+
+        <div class="stats-bar">
+          <div class="stat-item">
+            <div class="stat-label">Title Length</div>
+            <div class="stat-value"><span id="titleCountFull">0</span></div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Description Length</div>
+            <div class="stat-value"><span id="descCountFull">0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+  <script>
+    // Character counting
+    document.getElementById('title').addEventListener('input', function () {
+      document.getElementById('titleCount').textContent = this.value.length;
+      document.getElementById('titleCountFull').textContent = this.value.length;
+    });
+
+    document.getElementById('description').addEventListener('input', function () {
+      document.getElementById('descCount').textContent = this.value.length;
+      document.getElementById('descCountFull').textContent = this.value.length;
+    });
+
+    // Image preview
+    document.getElementById('imageUpload').addEventListener('change', function (e) {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const preview = document.getElementById('imagePreview');
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Text formatting
+    function formatText(command, value = null) {
+      document.execCommand(command, false, value);
+      document.getElementById('vlogEditor').focus();
+    }
+
+    // Form submission
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const user = localStorage.getItem('loggedInUser');
+      if (!user) {
+        alert('Please login first to upload a vlog');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+      const content = document.getElementById('vlogEditor').innerHTML;
+      const imageFile = document.getElementById('imageUpload').files[0];
+
+      if (!title || !description || !content.trim() || !imageFile) {
+        alert('Please fill in all fields including an image');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('username', user);
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('content', content);
+      formData.append('image', imageFile);
+
+      try {
+        const res = await fetch('http://localhost:3000/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          alert('🎉 Vlog published successfully!');
+          document.getElementById('uploadForm').reset();
+          document.getElementById('vlogEditor').innerHTML = '';
+          document.getElementById('imagePreview').style.display = 'none';
+          document.getElementById('titleCount').textContent = '0';
+          document.getElementById('descCount').textContent = '0';
+          document.getElementById('titleCountFull').textContent = '0';
+          document.getElementById('descCountFull').textContent = '0';
+        } else {
+          alert('Error: ' + (data.message || 'Failed to upload'));
+        }
+      } catch (err) {
+        alert('Error uploading vlog: ' + err.message);
+        console.error(err);
+      }
+    });
+
+    // Navbar scroll effect and mobile menu
+    (function () {
+      const navbar = document.querySelector('.navbar');
+      const mobileToggle = document.getElementById('mobileMenuToggle');
+      const nav = document.querySelector('.navbar nav');
+
+      function onScroll() {
+        if (window.scrollY > 30) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled');
+      }
+
+      window.addEventListener('scroll', onScroll);
+
+      function toggleMenu() {
+        const links = nav.querySelectorAll('a');
+        const userOptions = nav.querySelector('#userOptions');
+        const isOpen = nav.getAttribute('data-open') === 'true';
+        if (!isOpen) {
+          links.forEach((a) => { a.style.display = 'block'; });
+          if (userOptions) userOptions.style.display = 'block';
+          nav.setAttribute('data-open', 'true');
+        } else {
+          links.forEach((a) => { a.style.display = 'inline-block'; });
+          if (userOptions) userOptions.style.display = 'none';
+          nav.setAttribute('data-open', 'false');
+        }
+      }
+
+      function checkResize() {
+        const userOptions = nav.querySelector('#userOptions');
+        if (window.innerWidth < 700) {
+          mobileToggle.style.display = 'inline-block';
+          nav.querySelectorAll('a').forEach(a => a.style.display = 'none');
+          if (userOptions) userOptions.style.display = 'none';
+        } else {
+          mobileToggle.style.display = 'none';
+          nav.querySelectorAll('a').forEach(a => a.style.display = 'inline-block');
+          if (userOptions) userOptions.style.display = 'flex';
+        }
+      }
+
+      window.addEventListener('resize', checkResize);
+      checkResize();
+      mobileToggle.addEventListener('click', toggleMenu);
+    })();
+  </script>
+
+  <footer>
+    <div class="site-footer">
+      <div>
+        <h4>About Blogging Vlog</h4>
+        <p style="color:rgba(255,255,255,0.9); max-width:320px;">A modern place to share your stories, vlogs and ideas.
+          Built with love for creators.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <a href="index.html">Home</a>
+        <a href="profile.html">My Profile</a>
+        <a href="upload.html">Upload</a>
+        <a href="login.html">Login</a>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <a href="#">Help Center</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+      </div>
+      <div>
+        <h4>Follow Us</h4>
+        <div class="social-icons">
+          <a href="#" title="Twitter"><i class="ri-twitter-x-line"></i></a>
+          <a href="#" title="YouTube"><i class="ri-youtube-line"></i></a>
+          <a href="#" title="Instagram"><i class="ri-instagram-line"></i></a>
+        </div>
+        <p style="margin-top:12px;color:rgba(255,255,255,0.9)">© 2025 Blogging Vlog<br>Made by Kanchan Rajput</p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

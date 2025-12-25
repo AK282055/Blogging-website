@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile – Blogging Vlog</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.min.css" />
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="logo">Blogging <span>Vlog</span></div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="profile.html" class="active">Profile</a>
+      <a href="upload.html">Upload</a>
+      <a href="login.html">Login</a>
+      <a href="signup.html">Signup</a>
+      <div id="userOptions">
+        <button onclick="logout()">Logout</button>
+      </div>
+      <button id="mobileMenuToggle" aria-label="Menu" style="margin-left:12px; display:none">☰</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="profile-header">
+      <h2 id="profileName">Your Profile</h2>
+    </section>
+
+    <section class="upload-section">
+      <h3>Publish New Vlog</h3>
+      <form id="profileUploadForm" enctype="multipart/form-data" method="post">
+        <input type="text" id="profileTitle" name="title" placeholder="Vlog Title" required><br>
+        <div class="editor-toolbar">
+          <button type="button" onclick="formatText('bold')" title="Bold"><b>B</b></button>
+          <button type="button" onclick="formatText('italic')" title="Italic"><i>I</i></button>
+          <button type="button" onclick="formatText('underline')" title="Underline"><u>U</u></button>
+        </div>
+        <div id="vlogEditor" class="vlog-editor" contenteditable="true" placeholder="Write your vlog content here...">
+        </div>
+        <textarea id="profileDescription" name="description" placeholder="Short description" required></textarea><br>
+        <input type="file" id="profileImageUpload" name="image" accept="image/*"><br>
+        <div class="preview-image" id="imagePreview"></div>
+        <button type="submit" class="publish-btn">Publish Vlog</button>
+      </form>
+    </section>
+
+    <section id="myVlogsSection" style="margin-top: 30px;">
+      <h3>Your Vlogs</h3>
+      <div id="myVlogContainer" class="vlog-container"></div>
+    </section>
+
+    <style>
+      .vlog-editor {
+        min-height: 300px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        margin: 10px 0;
+        background: white;
+        overflow-y: auto;
+      }
+
+      .vlog-editor[placeholder]:empty:before {
+        content: attr(placeholder);
+        color: #999;
+      }
+
+      .editor-toolbar {
+        background: #f5f5f5;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px 4px 0 0;
+        margin-top: 10px;
+      }
+
+      .editor-toolbar button {
+        padding: 5px 10px;
+        margin-right: 5px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+
+      .editor-toolbar button:hover {
+        background: #e9e9e9;
+      }
+
+      .preview-image {
+        max-width: 300px;
+        max-height: 200px;
+        margin: 10px 0;
+      }
+
+      .preview-image img {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 4px;
+      }
+
+      .publish-btn {
+        margin-top: 15px;
+      }
+
+      .upload-section input[type="text"],
+      .upload-section textarea {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .upload-section textarea {
+        min-height: 60px;
+        resize: vertical;
+      }
+    </style>
+
+    <style>
+      /* Profile-specific vlog list styles to improve readability */
+      #myVlogsSection .vlog-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0.5rem 0;
+      }
+
+      #myVlogsSection .vlog-card {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        padding: 10px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        cursor: default;
+      }
+
+      #myVlogsSection .vlog-card img {
+        width: 180px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        flex-shrink: 0;
+      }
+
+      #myVlogsSection .vlog-info {
+        padding: 0;
+        flex: 1;
+      }
+
+      #myVlogsSection .vlog-info h3 {
+        margin: 0 0 6px 0;
+        font-size: 1.1rem;
+        color: #2e2e6b;
+      }
+
+      #myVlogsSection .vlog-content,
+      #myVlogsSection .vlog-description {
+        color: #444;
+        max-height: 3.6em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      #myVlogsSection .vlog-footer {
+        margin-top: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      #myVlogsSection .edit-btn {
+        background: #ffb300;
+        color: #fff;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      #myVlogsSection .delete-btn {
+        background: #f44336;
+        color: #fff;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      /* Ensure buttons don't trigger card click */
+      #myVlogsSection .edit-btn,
+      #myVlogsSection .delete-btn {
+        pointer-events: auto;
+      }
+    </style>
+
+  </main>
+
+  <style>
+    .upload-section {
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .upload-section form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .upload-section input[type="text"],
+    .upload-section textarea {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 100%;
+    }
+
+    .upload-section textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .upload-section button {
+      background: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .upload-section button:hover {
+      background: #45a049;
+    }
+
+    .vlog-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
+    }
+
+    .delete-btn {
+      background: #f44336;
+      color: white;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    .delete-btn:hover {
+      background: #d32f2f;
+    }
+
+    .date {
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    .profile-header {
+      background: linear-gradient(135deg, #a8c0ff, #3f2b96);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .profile-header h2 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+  </style>
+
+  <script src="script.js"></script>
+  <script>
+    // Initialize currentVlogData object for storing vlog data
+    let currentVlogData = {};
+
+    // Navbar scroll effect and mobile menu
+    (function () {
+      const navbar = document.querySelector('.navbar');
+      const mobileToggle = document.getElementById('mobileMenuToggle');
+      const nav = document.querySelector('.navbar nav');
+
+      function onScroll() {
+        if (window.scrollY > 30) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled');
+      }
+
+      window.addEventListener('scroll', onScroll);
+
+      // Simple mobile toggle
+      function toggleMenu() {
+        const links = nav.querySelectorAll('a');
+        const userOptions = nav.querySelector('#userOptions');
+        const isOpen = nav.getAttribute('data-open') === 'true';
+        if (!isOpen) {
+          links.forEach((a) => { a.style.display = 'block'; });
+          if (userOptions) userOptions.style.display = 'block';
+          nav.setAttribute('data-open', 'true');
+        } else {
+          links.forEach((a) => { a.style.display = 'inline-block'; });
+          if (userOptions) userOptions.style.display = 'none';
+          nav.setAttribute('data-open', 'false');
+        }
+      }
+
+      // Show mobile toggle on small screens
+      function checkResize() {
+        const userOptions = nav.querySelector('#userOptions');
+        if (window.innerWidth < 700) {
+          mobileToggle.style.display = 'inline-block';
+          // hide links and userOptions by default on mobile
+          nav.querySelectorAll('a').forEach(a => a.style.display = 'none');
+          if (userOptions) userOptions.style.display = 'none';
+        } else {
+          mobileToggle.style.display = 'none';
+          nav.querySelectorAll('a').forEach(a => a.style.display = 'inline-block');
+          if (userOptions) userOptions.style.display = 'flex';
+        }
+      }
+
+      window.addEventListener('resize', checkResize);
+      checkResize();
+      mobileToggle.addEventListener('click', toggleMenu);
+    })();
+  </script>
+  <script>
+
+    const user = localStorage.getItem('loggedInUser');
+    const profileName = document.getElementById('profileName');
+    const myVlogContainer = document.getElementById('myVlogContainer');
+
+
+    if (!user) {
+      alert('⚠️ You must login first to access your profile');
+      window.location.href = 'login.html';
+    } else {
+      profileName.innerText = `👤 ${user}'s Profile`;
+    }
+
+
+    async function deleteVlog(event, vlogId, username) {
+      event.stopPropagation();
+      if (!confirm('Are you sure you want to delete this vlog?')) {
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:3000/vlogs/${vlogId}/${username}`, {
+          method: 'DELETE'
+        });
+
+        const data = await res.json();
+
+        if (data.message && data.message.includes('successfully')) {
+          alert(' Vlog deleted successfully!');
+          loadMyVlogs();
+        } else {
+          alert(' ' + (data.message || 'Failed to delete vlog'));
+        }
+      } catch (err) {
+        alert(' Error deleting vlog');
+        console.error(err);
+      }
+    }
+
+
+    async function loadMyVlogs() {
+      try {
+        // Resolve the current user's id (if present in data.json)
+        let userId = null;
+        try {
+          const ures = await fetch(`http://localhost:3000/user?username=${encodeURIComponent(user)}`);
+          const udata = await ures.json();
+          if (udata.success && udata.user && udata.user.id) userId = udata.user.id;
+        } catch (e) {
+          console.warn('Could not resolve user id', e);
+        }
+
+        const res = await fetch('http://localhost:3000/vlogs');
+        const vlogs = await res.json();
+        // Filter by authorId if available, otherwise fallback to username
+        const mine = vlogs.filter(v => (v.authorId && userId && v.authorId === userId) || v.username === user);
+
+        if (mine.length === 0) {
+          myVlogContainer.innerHTML = '<p style="text-align: center; padding: 20px; color: #666;">📝 No vlogs uploaded yet. Create your first vlog above!</p>';
+          return;
+        }
+        const uploadedHTML = mine.map(v => {
+          currentVlogData[v.id] = v;
+          return `
+          <div class="vlog-card fade-in" onclick="showVlogDetails('${v.id}')">
+            <img src="${v.image}" alt="${v.title}">
+            <div class="vlog-info">
+              <h3>${v.title}</h3>
+              <div class="vlog-content">${v.content || v.description}</div>
+              <p class="vlog-description">${v.description}</p>
+              <div class="vlog-footer">
+                <span class="tag">your vlog</span>
+                <span class="date">${v.date || 'Just now'}</span>
+                <div style="display:flex; gap:8px; align-items:center;">
+                  <button class="edit-btn" onclick="editVlog(event, '${v.id}')">✏️ Edit</button>
+                  <button class="delete-btn" onclick="deleteVlog(event, '${v.id}', '${user}')">🗑️ Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        }).join('');
+
+        myVlogContainer.innerHTML = uploadedHTML;
+      } catch (err) {
+        console.error('Error loading vlogs:', err);
+        myVlogContainer.innerHTML = '<p style="color: red; text-align: center;">❌ Failed to load vlogs. Please try again.</p>';
+      }
+    }
+    loadMyVlogs();
+    function formatText(command) {
+      document.execCommand(command, false, null);
+      document.getElementById('vlogEditor').focus();
+    }
+    const imageInput = document.getElementById('profileImageUpload');
+    const imagePreview = document.getElementById('imagePreview');
+    if (imageInput) {
+      imageInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+          }
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+    const profileUploadForm = document.getElementById('profileUploadForm');
+    const vlogEditor = document.getElementById('vlogEditor');
+
+    if (profileUploadForm) {
+      profileUploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById('profileTitle').value;
+        const description = document.getElementById('profileDescription').value;
+        const content = vlogEditor.innerHTML;
+        const imageInput = document.getElementById('profileImageUpload');
+
+        if (!title || !description) {
+          alert(' Please fill in title and description');
+          return;
+        }
+
+        // If creating new vlog, image is required. If editing, image is optional.
+        if (!window.editingVlogId && !imageInput.files[0]) {
+          alert(' Please select an image file');
+          return;
+        }
+
+        if (!content.trim()) {
+          alert(' Please write some content for your vlog');
+          return;
+        }
+
+        try {
+          if (window.editingVlogId) {
+            // EDITING MODE - Send PUT request
+            const formData = new FormData();
+            formData.append('username', user);
+            formData.append('title', title);
+            formData.append('description', description);
+            formData.append('content', content);
+            if (imageInput.files[0]) {
+              formData.append('image', imageInput.files[0]);
+            }
+
+            console.log('Sending PUT request for vlog ID:', window.editingVlogId);
+
+            const res = await fetch(`http://localhost:3000/vlogs/${window.editingVlogId}`, {
+              method: 'PUT',
+              body: formData
+            });
+
+            const data = await res.json();
+            console.log('PUT Response:', data);
+
+            if (data.success) {
+              alert(' Vlog updated successfully!');
+              window.editingVlogId = null;
+              document.querySelector('.publish-btn').textContent = 'Publish Vlog';
+              profileUploadForm.reset();
+              vlogEditor.innerHTML = '';
+              imagePreview.innerHTML = '';
+              loadMyVlogs();
+            } else {
+              alert(' Update failed: ' + (data.message || 'Unknown error'));
+            }
+          } else {
+            // CREATING MODE - Send POST request
+            const formData = new FormData();
+            formData.append('username', user);
+            formData.append('title', title);
+            formData.append('description', description);
+            formData.append('content', content);
+            if (imageInput.files[0]) {
+              formData.append('image', imageInput.files[0]);
+            }
+
+            console.log('Sending POST request for new vlog');
+
+            const res = await fetch('http://localhost:3000/upload', {
+              method: 'POST',
+              body: formData
+            });
+
+            const data = await res.json();
+            console.log('POST Response:', data);
+
+            if (data.success) {
+              alert(' Vlog published successfully!');
+              profileUploadForm.reset();
+              vlogEditor.innerHTML = '';
+              imagePreview.innerHTML = '';
+              loadMyVlogs();
+            } else {
+              alert(' Upload failed: ' + (data.message || 'Unknown error'));
+            }
+          }
+        } catch (err) {
+          console.error('Form submission error:', err);
+          alert(' Error: ' + err.message);
+        }
+      });
+    }
+
+    // Edit flow: populate form with existing vlog data
+    window.editingVlogId = null;
+    async function editVlog(e, id) {
+      e.stopPropagation();
+
+      if (!currentVlogData || !currentVlogData[id]) {
+        console.error('Vlog data not found for ID:', id);
+        console.error('currentVlogData:', currentVlogData);
+        alert('❌ Vlog data not found');
+        return;
+      }
+
+      const vlog = currentVlogData[id];
+      console.log('Editing vlog:', vlog);
+
+      // Populate form
+      document.getElementById('profileTitle').value = vlog.title || '';
+      document.getElementById('profileDescription').value = vlog.description || '';
+      document.getElementById('vlogEditor').innerHTML = vlog.content || vlog.description || '';
+
+      if (vlog.image) {
+        imagePreview.innerHTML = `<img src="${vlog.image}" alt="Preview">`;
+      } else {
+        imagePreview.innerHTML = '';
+      }
+
+      // Set editing mode
+      window.editingVlogId = id;
+      document.querySelector('.publish-btn').textContent = 'Update Vlog';
+
+      // Scroll to form
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Focus on title field
+      document.getElementById('profileTitle').focus();
+
+      console.log('Edit mode activated for vlog ID:', id);
+    }
+  </script>
+
+  <footer>
+    <div class="site-footer">
+      <div>
+        <h4>About Blogging Vlog</h4>
+        <p style="color:rgba(255,255,255,0.9); max-width:320px;">A modern place to share your stories, vlogs and ideas.
+          Built with love for creators.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <a href="index.html">Home</a>
+        <a href="profile.html">My Profile</a>
+        <a href="upload.html">Upload</a>
+        <a href="login.html">Login</a>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <a href="#">Help Center</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+      </div>
+      <div>
+        <h4>Follow Us</h4>
+        <div class="social-icons">
+          <a href="#" title="Twitter"><i class="ri-twitter-x-line"></i></a>
+          <a href="#" title="YouTube"><i class="ri-youtube-line"></i></a>
+          <a href="#" title="Instagram"><i class="ri-instagram-line"></i></a>
+        </div>
+        <p style="margin-top:12px;color:rgba(255,255,255,0.9)">© 2025 Blogging Vlog<br>Made by Kanchan Rajput</p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

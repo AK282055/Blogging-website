@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blogging Vlog</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.min.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">Blogging <span>Vlog</span></div>
+    <nav>
+      <a href="index.html" class="active">Home</a>
+      <a href="profile.html">Profile</a>
+      <a href="upload.html">Upload</a>
+      <a href="login.html">Login</a>
+      <a href="signup.html">Signup</a>
+      <div id="userOptions">
+        <button onclick="logout()">Logout</button>
+      </div>
+      <button id="mobileMenuToggle" aria-label="Menu" style="margin-left:12px; display:none">☰</button>
+    </nav>
+  </header>
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>Share your stories. Inspire the world.</h1>
+      <p>Beautiful, fast and secure. Create vlogs, reach an audience and grow your voice.</p>
+      <div>
+        <a href="upload.html" class="cta-btn">Start Blogging</a>
+        <a href="signup.html" class="cta-btn"
+          style="background:transparent;color:var(--brand-1);margin-left:12px;border:2px solid var(--brand-1);">Join
+          Now</a>
+      </div>
+    </div>
+  </section>
+  <section class="vlog-section">
+    <h2>Explore Featured Vlogs</h2>
+    <div class="vlog-container" id="vlogs">
+    </div>
+  </section>
+  <footer>
+    <div class="site-footer">
+      <div>
+        <h4>About Blogging Vlog</h4>
+        <p style="color:rgba(255,255,255,0.9); max-width:320px;">A modern place to share your stories, vlogs and ideas.
+          Built with love for creators.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <a href="index.html">Home</a>
+        <a href="profile.html">My Profile</a>
+        <a href="upload.html">Upload</a>
+        <a href="login.html">Login</a>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <a href="#">Help Center</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+      </div>
+      <div>
+        <h4>Follow Us</h4>
+        <div class="social-icons">
+          <a href="#" title="Twitter"><i class="ri-twitter-x-line"></i></a>
+          <a href="#" title="YouTube"><i class="ri-youtube-line"></i></a>
+          <a href="#" title="Instagram"><i class="ri-instagram-line"></i></a>
+        </div>
+        <p style="margin-top:12px;color:rgba(255,255,255,0.9)">© 2025 Blogging Vlog<br>Made by Kanchan Rajput</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    async function loadVlogs() {
+      try {
+        const res = await fetch("http://localhost:3000/vlogs");
+        const vlogs = await res.json();
+
+        const container = document.getElementById("vlogs");
+        if (vlogs.length === 0) {
+          container.innerHTML = "<p>No vlogs yet. Start by uploading one!</p>";
+          return;
+        }
+        container.innerHTML = vlogs.map(v => `
+          <div class="vlog-card">
+            <img src="${v.image}" alt="${v.title}" width="250" />
+            <div class="vlog-info">
+              <h3>${v.title}</h3>
+              <p>${v.description}</p>
+              <small>By ${v.username} • ${v.date || "Unknown date"}</small>
+              <button class="read-btn" onclick="showVlogDetails('${v.id}'); event.stopPropagation();">📖 Read Blog</button>
+            </div>
+          </div>
+        `).join("");
+        vlogs.forEach(v => {
+          currentVlogData[v.id] = v;
+        });
+      } catch (error) {
+        console.error("Error loading vlogs:", error);
+      }
+    }
+
+    loadVlogs();
+  </script>
+
+  <script>
+    (function () {
+      const navbar = document.querySelector('.navbar');
+      const mobileToggle = document.getElementById('mobileMenuToggle');
+      const nav = document.querySelector('.navbar nav');
+
+      function onScroll() {
+        if (window.scrollY > 30) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled');
+      }
+      window.addEventListener('scroll', onScroll);
+      function toggleMenu() {
+        const links = nav.querySelectorAll('a');
+        const userOptions = nav.querySelector('#userOptions');
+        const isOpen = nav.getAttribute('data-open') === 'true';
+        if (!isOpen) {
+          links.forEach((a) => { a.style.display = 'block'; });
+          if (userOptions) userOptions.style.display = 'block';
+          nav.setAttribute('data-open', 'true');
+        } else {
+          links.forEach((a) => { a.style.display = 'inline-block'; });
+          if (userOptions) userOptions.style.display = 'none';
+          nav.setAttribute('data-open', 'false');
+        }
+      }
+      function checkResize() {
+        const userOptions = nav.querySelector('#userOptions');
+        if (window.innerWidth < 700) {
+          mobileToggle.style.display = 'inline-block';
+          nav.querySelectorAll('a').forEach(a => a.style.display = 'none');
+          if (userOptions) userOptions.style.display = 'none';
+        } else {
+          mobileToggle.style.display = 'none';
+          nav.querySelectorAll('a').forEach(a => a.style.display = 'inline-block');
+          if (userOptions) userOptions.style.display = 'flex';
+        }
+      }
+
+      window.addEventListener('resize', checkResize);
+      checkResize();
+      mobileToggle.addEventListener('click', toggleMenu);
+    })();
+  </script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="oauth.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+{
+  "users": [
+    {
+      "username": "khushi",
+      "email": "khushi24@gmail.com",
+      "password": "khushi1234"
+    },
+    {
+      "id": "1763137309093",
+      "username": "kanchan",
+      "email": "rajputkanchan601@gmail.com",
+      "password": "kanchan1234"
+    }
+  ],
+  "vlogs": [
+    {
+      "id": "1762796602922",
+      "username": "khushi",
+      "title": "  🧘‍♀️ If it's a Personal / Motivation Vlog",
+      "description": "“This is my first vlog — a small step toward sharing my thoughts, my journey, and the lessons I i have learned along the way. It's about growth, positivity, and staying true to yourself, no matter what.”",
+      "image": "/uploads/1762796602900.jpg",
+      "date": "10/11/2025, 11:13:22 pm"
+    },
+    {
+      "id": "1762875264104",
+      "username": "khushi",
+      "title": "motivation vlog",
+      "description": "”\r\n\r\n🧘‍♀️ If it’s a Personal / Motivation Vlog:\r\n\r\n“This is my first vlog — a small step toward sharing my thoughts, my journey, and the lessons I’ve learned along the way. It’s about growth, positivity, and staying true to yourself, no matter what.”",
+      "image": "/uploads/1763137057917.jpeg",
+      "date": "14/11/2025, 9:47:37 pm",
+      "content": "”\r\n\r\n🧘‍♀️ If it’s a Personal / Motivation Vlog:\r\n\r\n“This is my first vlog — a small step toward sharing my thoughts, my journey, and the lessons I’ve learned along the way. It’s about growth, positivity, and staying true to yourself, no matter what.”"
+    },
+    {
+      "id": "1763137594450",
+      "username": "kanchan",
+      "authorId": "1763137309093",
+      "title": "Food Vlog",
+      "description": "“Welcome to my first food vlog! Today, I’m trying out some of my favorite street foods and hidden restaurant gems. From spicy bites to sweet delights, every dish has its own story and flavor worth sharing.",
+      "content": "<p data-start=\"0\" data-end=\"82\">👇</p>\r\n<hr data-start=\"84\" data-end=\"87\">\r\n<p data-start=\"89\" data-end=\"150\"><strong data-start=\"89\" data-end=\"150\">🍽️ My First Food Vlog – A Journey of Flavors and Stories</strong></p>\r\n<p data-start=\"152\" data-end=\"518\">Welcome to my very first food vlog! In this episode, I take you on a delicious journey through some of my favorite local street foods and hidden restaurant gems that truly define the soul of my city. From the sizzling aroma of spicy snacks being cooked on the roadside to the comforting sweetness of desserts served with love, every dish I try has a story to tell.</p>\r\n<p data-start=\"520\" data-end=\"962\">Food is more than just taste — it’s an experience, a memory, and a connection with people. Through this vlog, I wanted to capture those little moments that make eating out so special — the cheerful vendors, the vibrant colors of the dishes, and the warmth of sharing a meal with friends. Whether it’s a crispy samosa, creamy pasta, or a traditional homemade delicacy, each bite reminded me how food brings happiness and creativity together.</p>\r\n<p data-start=\"964\" data-end=\"1313\">I hope you enjoy watching this vlog as much as I enjoyed filming it. If you’re a foodie like me, stay tuned for more culinary adventures — we’ll be exploring new tastes, hidden cafes, and street food wonders every week. Don’t forget to like, comment, and share your favorite dish from this episode. Let’s make every meal a story worth sharing! 🍴✨</p>\r\n        ",
+      "image": "/uploads/1763137594443.jpeg",
+      "date": "14/11/2025, 9:56:34 pm",
+      "timestamp": 1763137594450
+    },
+    {
+      "id": "1763137834785",
+      "username": "kanchan",
+      "authorId": "1763137309093",
+      "title": "Travel ",
+      "description": "“Join me on my first adventure as I explore the stunning mountain views, peaceful valleys, and hidden gems that make this trip unforgettable. From sunrise hikes to cozy local cafes, every moment was magical. Let’s wander together!”",
+      "content": "<h3 data-start=\"142\" data-end=\"222\"><strong data-start=\"146\" data-end=\"222\">✨ My First Travel Vlog – Exploring the Mountains &amp; Indian Travel Culture</strong></h3>\r\n<p data-start=\"224\" data-end=\"704\">This is my first travel vlog, and I couldn’t think of a better place to begin this journey than the breathtaking mountains of India. From the moment I arrived, the cool breeze, peaceful valleys, and towering peaks felt like a warm welcome into nature’s arms. Each step on the mountain trails reminded me how beautiful and diverse our country truly is. India’s mountain culture isn’t just about scenery—it’s about the people, the traditions, and the stories hidden in every corner.</p>\r\n<p data-start=\"706\" data-end=\"1154\">Throughout this trip, I explored sunrise viewpoints where the golden light touched the peaks like magic. I visited cozy local cafés that served chai with a mountain twist, met friendly locals who shared their traditions, and discovered hidden spots that gave me a deeper connection to the place. Whether it was hearing folk music echo through the hills or watching prayer flags flutter in the wind, every moment carried a sense of purity and peace.</p>\r\n<p data-start=\"1156\" data-end=\"1454\">Traveling through the mountains of India teaches you something special: slow down, breathe, and appreciate the little things. This vlog is not just about the destination but the experience—walking through narrow village paths, learning about local culture, and capturing the raw beauty of nature.</p>\r\n<p data-start=\"1456\" data-end=\"1569\" data-is-last-node=\"\" data-is-only-node=\"\">Join me on this journey as I explore not just the mountains, but a part of myself too.&nbsp;</p>\r\n        ",
+      "image": "/uploads/1763137834782.jpeg",
+      "date": "14/11/2025, 10:00:34 pm",
+      "timestamp": 1763137834785
+    }
+  ]
+}
